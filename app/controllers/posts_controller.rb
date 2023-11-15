@@ -5,7 +5,20 @@ class PostsController < ApplicationController
         @post = Post.new
     end
 
-    # def create
+    def create
+        params[:post][:user_id] = current_user.id
+        @post = Post.new(post_params)
 
-    # end
+        if @post.save
+            redirect_to posts_path
+        else
+            render :new, status: :unprocessable_entity
+        end
+    end
+
+    private
+
+    def post_params
+        params.require(:post).permit(:title, :body, :user_id)
+    end
 end
